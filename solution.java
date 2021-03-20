@@ -7,14 +7,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+
 public class solution {
 
     public static class imu {
         List<String> imuBuf;
+        //记录下面各类变量的和
         double ACC_X = 0.0, ACC_Y = 0.0, ACC_Z = 0.0, GYR_X = 0.0, GYR_Y = 0.0, GYR_Z = 0.0;
         double MAG_X = 0.0, MAG_Y = 0.0, MAG_Z = 0.0, PITCHX = 0.0, ROLLY = 0.0, YAWZ = 0.0, PRES = 0.0;
+        //记录每种数据的个数
         int ACCE_NUM, GYRO_NUM, MAGN_NUM, PRES_NUM, AHRS_NUM;
+        //记录从上一次输出后收到的数据的类型个数
         int dataTypeNum;
+        //记录最小时间
         double SensorTimeStamp;
         String path;
 
@@ -22,9 +27,10 @@ public class solution {
             imuBuf = new ArrayList<>();
             this.path = path;
             imuBuf = new ArrayList<>();
-            clean();
+            clean();//数据初始化
         }
 
+        //输出结果
         public void writeFile() {
             File file = new File(path);
             try {
@@ -42,6 +48,8 @@ public class solution {
             imuBuf.clear();
         }
 
+
+        //处理数据
         public void process(String strs[]) {
             switch (strs[0]) {
             case "ACCE":
@@ -70,9 +78,9 @@ public class solution {
                 PRES_NUM++;
                 break;
             case "AHRS":
-                GYR_X += Double.parseDouble(strs[3]);
-                GYR_Y += Double.parseDouble(strs[4]);
-                GYR_Z += Double.parseDouble(strs[5]);
+                PITCHX += Double.parseDouble(strs[3]);
+                ROLLY += Double.parseDouble(strs[4]);
+                YAWZ += Double.parseDouble(strs[5]);
                 if (AHRS_NUM == 0) {
                     dataTypeNum++;
                 }
@@ -109,6 +117,7 @@ public class solution {
             }
         }
 
+        //初始化
         public void clean() {
             ACC_X = 0.0;
             ACC_Y = 0.0;
@@ -130,8 +139,8 @@ public class solution {
     }
 
     public static class wifi {
-        List<String> wifiBuf;
-        double SensorTimeStamp;
+        List<String> wifiBuf;//暂存结果
+        double SensorTimeStamp;//记录最小时间
         String path;
         wifi(String path){
             wifiBuf = new ArrayList<>();
@@ -139,6 +148,7 @@ public class solution {
             SensorTimeStamp = Double.MAX_VALUE;
         }
 
+        //输出结果
         public void writeFile() {
             File file = new File(path);
             try {
@@ -155,7 +165,7 @@ public class solution {
             wifiBuf.clear();
         }
 
-        //todo
+        //将16进制转换称10进制
         public String SISTEENTO10(String strs[]){
             long ans = 0;
             for (int i = 0; i < strs.length; i++) {
@@ -171,13 +181,14 @@ public class solution {
             return Long.toString(ans);
         }
 
+
         public void process(String strs[]){
             StringBuilder sb = new StringBuilder();
-            SensorTimeStamp = Math.min(SensorTimeStamp,Double.parseDouble(strs[2]));
-            double time = Double.parseDouble(strs[2])-SensorTimeStamp;
-            sb.append(Double.toString(time)+","+SISTEENTO10(strs[4].split(":"))+strs[strs.length-1]);
-            wifiBuf.add(sb.toString());
-            if(wifiBuf.size()==100)
+            SensorTimeStamp = Math.min(SensorTimeStamp,Double.parseDouble(strs[2]));//记录最小值
+            double time = Double.parseDouble(strs[2])-SensorTimeStamp;//求TIME
+            sb.append(Double.toString(time)+","+SISTEENTO10(strs[4].split(":"))+strs[strs.length-1]);//拼接字符串
+            wifiBuf.add(sb.toString());//添加结果进缓存
+            if(wifiBuf.size()==100)//输出
                 writeFile();
         }
     }
@@ -194,6 +205,7 @@ public class solution {
             map = new HashMap<>();
         }
 
+        //输出结果
         public void writeFile() {
             File file = new File(path);
             try {
@@ -214,25 +226,27 @@ public class solution {
 
         public void process(String strs[]){
             StringBuilder sb = new StringBuilder();
-            double Ctime = Double.parseDouble(strs[1])-firsTime;
+            double Ctime = Double.parseDouble(strs[1])-firsTime;//计算CTIME
+            //拼接数据
             sb.append(Double.toString(Ctime)+","+strs[2]+","+strs[3]+","+strs[4]+","+strs[5]+","+strs[6]+","+strs[7]+","+strs[9]+","+strs[10]);
-            gnssBuf.add(sb.toString());
+            gnssBuf.add(sb.toString());//加入缓存
+            //输出
             if(gnssBuf.size()==100)
                 writeFile();
         }
     }
     public static void main(String[] args) {
         solution s = new solution();
-        String path = new String("C:\\Users\\xxy\\Desktop\\logfile_2020_03_19_09_31_56.txt");
-        imu IMU = new imu("D:\\imu.txt");
-        wifi WIFI = new wifi("D:\\wifi.txt");
-        gnss GNSS = new gnss("D:\\gnss.txt",-1);
-        // 1.读取处理文件
+        String path = new String("C:\\Users\\xxy\\Desktop\\logfile_2020_03_19_09_31_56.txt");//输入文件路径
+        imu IMU = new imu("D:\\imu.txt");//创建IMU对象，处理数据并保存
+        wifi WIFI = new wifi("D:\\wifi.txt");//创建WIFI对象，处理数据并保存
+        gnss GNSS = new gnss("D:\\gnss.txt",-1);//创建GNSS对象，处理数据并保存
+        //读取并处理数据
         File file = new File(path);
         s.ReadAndProcess(file,WIFI,IMU,GNSS);
     }
 
-    // 文件读取程序
+    //读取处理数据
     public void ReadAndProcess(File file,wifi WIFI,imu IMU,gnss GNSS) {
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));// 读取文件
