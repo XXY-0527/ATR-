@@ -33,7 +33,7 @@ public class solution {
         public void writeFile() {
             File file = new File(path);
             try {
-                BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+                BufferedWriter bw = new BufferedWriter(new FileWriter(file,true));
                 for (int i = 0; i < imuBuf.size(); i++) {
                     bw.write(imuBuf.get(i));
                     // System.out.println("imuBuf["+i+"]:\t"+imuBuf.get(i));
@@ -151,7 +151,7 @@ public class solution {
         public void writeFile() {
             File file = new File(path);
             try {
-                BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+                BufferedWriter bw = new BufferedWriter(new FileWriter(file,true));
                 for (int i = 0; i < wifiBuf.size(); i++) {
                     bw.write(wifiBuf.get(i));
                     bw.newLine();
@@ -211,7 +211,7 @@ public class solution {
         public void writeFile() {
             File file = new File(path);
             try {
-                BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+                BufferedWriter bw = new BufferedWriter(new FileWriter(file,true));
                 for (int i = 0; i < gnssBuf.size(); i++) {
                     // System.out.println("gnss["+i+"]:\t"+gnssBuf.get(i));
                     bw.write(gnssBuf.get(i));
@@ -256,14 +256,16 @@ public class solution {
         solution s = new solution();
         /*
         String path = new String("C:\\Users\\xxy\\Desktop\\logfile_2020_03_19_09_31_56.txt");// 输入文件路径
-        imu IMU = new imu("D:\\ATR实验室研一软件培训结业测试题\\ATR-\\imu1.txt");// 创建IMU对象，处理数据并保存
-        wifi WIFI = new wifi("D:\\ATR实验室研一软件培训结业测试题\\ATR-\\wifi1.txt");// 创建WIFI对象，处理数据并保存
-        gnss GNSS = new gnss("D:\\ATR实验室研一软件培训结业测试题\\ATR-\\gnss1.txt", -1);// 创建GNSS对象，处理数据并保存
+        imu IMU = new imu("D:\\ATR实验室研一软件培训结业测试题\\ATR-xxy\\ATR-\\imu1.txt");// 创建IMU对象，处理数据并保存
+        wifi WIFI = new wifi("D:\\ATR实验室研一软件培训结业测试题\\ATR-xxy\\ATR-\\wifi1.txt");// 创建WIFI对象，处理数据并保存
+        gnss GNSS = new gnss("D:\\ATR实验室研一软件培训结业测试题\\ATR-xxy\\ATR-\\gnss1.txt", -1);// 创建GNSS对象，处理数据并保存
         */
-        String path = new String("D:\\ATR实验室研一软件培训结业测试题\\ATR-\\EVALUATION(1).txt");// 输入文件路径
-        imu IMU = new imu("D:\\ATR实验室研一软件培训结业测试题\\ATR-\\imu2.txt");// 创建IMU对象，处理数据并保存
-        wifi WIFI = new wifi("D:\\ATR实验室研一软件培训结业测试题\\ATR-\\wifi2.txt");// 创建WIFI对象，处理数据并保存
-        gnss GNSS = new gnss("D:\\ATR实验室研一软件培训结业测试题\\ATR-\\gnss2.txt", -1);// 创建GNSS对象，处理数据并保存
+        
+        String path = new String("D:\\ATR实验室研一软件培训结业测试题\\ATR-xxy\\ATR-\\EVALUATION(1).txt");// 输入文件路径
+        imu IMU = new imu("D:\\ATR实验室研一软件培训结业测试题\\ATR-xxy\\ATR-\\imu2.txt");// 创建IMU对象，处理数据并保存
+        wifi WIFI = new wifi("D:\\ATR实验室研一软件培训结业测试题\\ATR-xxy\\ATR-\\wifi2.txt");// 创建WIFI对象，处理数据并保存
+        gnss GNSS = new gnss("D:\\ATR实验室研一软件培训结业测试题\\ATR-xxy\\ATR-\\gnss2.txt", -1);// 创建GNSS对象，处理数据并保存
+        
         // 读取并处理数据
         File file = new File(path);
         s.getMinSTS(file, WIFI, IMU, GNSS);
